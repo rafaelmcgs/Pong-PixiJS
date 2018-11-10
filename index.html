@@ -5,6 +5,7 @@
 <title>Pong - PixiJS</title>
 	<link href="css/main.css" rel="stylesheet" type="text/css">
 	<script src="js/pixi.min.js"></script>
+	<script src="js/pixi-sound.min.js"></script>
 	<script src="js/gameManager.js"></script>
 	<script src="js/paddle.js"></script>
 	<script src="js/ball.js"></script>
@@ -12,6 +13,19 @@
 </head>
 
 <body>
-	<div class="pong-loader"></div>
+	<div id="mainDiv" class="pong-loader"></div>
+	<script type="text/javascript">
+		var gameManager;
+		function documentReady() {
+			gameManager = new GameManager();
+		}
+		// this is required for the (not so) edge case where your script is loaded after the document has loaded
+		if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+			documentReady();
+		} else {
+			// the document hasn't finished loading/parsing yet, so let's add an event handler
+			document.addEventListener('DOMContentLoaded', documentReady);
+		}
+	</script>
 </body>
 </html>
