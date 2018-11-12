@@ -19,8 +19,8 @@ function GameManager (){
 	this.titleText = new Title();
 	this.buttons = {
 		start: new Button(this, "Start", this.openLevelMenu, "center"),
-		level1: new Button(this, "Normal Mode", this.selectLevel1, "left"),
-		level2: new Button(this, "Impossible Mode", this.selectLevel2, "right"),
+		level1: new Button(this, "Normal", this.selectLevel1, "left"),
+		level2: new Button(this, "Impossible", this.selectLevel2, "right"),
 		restart: new Button(this, "Play Again", this.startMatch, "left"),
 		change: new Button(this, "Change Mode", this.openLevelMenu, "right")
 	};
@@ -118,7 +118,11 @@ GameManager.prototype.addElementToStage = function(element){
 /////////////////////
 GameManager.prototype.openLevelMenu = function(){
 	this.playing = false;
-	this.stage.removeChildren();	
+	this.stage.removeChildren();
+	this.addElementToStage(this.titleText);
+	this.addElementToStage(this.buttons.level1);
+	this.addElementToStage(this.buttons.level2);
+	this.titleText.setText("Choose Level");
 };
 GameManager.prototype.selectLevel1 = function(){
 	

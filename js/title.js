@@ -8,10 +8,31 @@ function Title (){
 	}; 
 }
 Title.prototype = Object.create(PIXI.Text.prototype);
-Title.prototype.update = function(){
-	
-};
+
 Title.prototype.resize = function(){
+	var elementBounds;
+	var maxSize = {
+		width: window.innerWidth * 0.9,
+		height: window.innerHeight * 0.4
+ 	};
+	
+	this.style.fontSize = 100;	
+	var sizeOK = false;
+	while(!sizeOK){
+		elementBounds = this. getLocalBounds();
+		if(
+			elementBounds.width < maxSize.width
+			&& elementBounds.height < maxSize.height
+		){
+			sizeOK=true;
+		}else{
+		   this.style.fontSize -= 1;
+		}
+	}
+	
+	//reposition element
+	this.x = (window.innerWidth - elementBounds.width)/2;
+	this.y = (window.innerHeight/2) - elementBounds.height;
 	
 };
 
