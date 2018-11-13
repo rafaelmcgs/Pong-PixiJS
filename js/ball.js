@@ -4,6 +4,13 @@ function Ball (gameManager_){
 	  
 	this.gameManager = gameManager_;
 	
+	this.isReleased = false;
+	this.velocity = {
+		x:0,
+		y:0
+	};
+	
+	
 	var gameDimensions = this.gameManager.getGameSize();
 	//Draw the paddle
 	this.beginFill(0xffffff);
@@ -13,13 +20,59 @@ function Ball (gameManager_){
 	this.paddles = {
 		left: this.gameManager.getPaddlePlayer(),
 		right: this.gameManager.getPaddleAI()
-	}
+	};
 	
 	this.goToCenterPosition("left");
 }
 
 Ball.prototype = Object.create(PIXI.Graphics.prototype);
 Ball.prototype.update = function(){
+	if(!this.isReleased){return;}
+	
+	//Insert movement
+	this.x += this.velocity.x;
+	this.y += this.velocity.y;
+	
+	var ballBounds = this.getLocalBounds();
+	var gameDimensions = this.gameManager.getGameSize();
+	
+	//Check ball collision on top and bottom walls
+	if(this.y + ballBounds.y < 0
+	   || this.y + ballBounds.y + ballBounds.height > gameDimensions.height
+	){
+		this.velocity.y *= -1;
+	}
+	
+	/**
+	 *Check ball collision on gutters or paddles
+	 */
+	if(this.x + ballBounds.x < 0){
+		//Check collision with left gutter
+		this.gameManager.endRound("AI");
+		
+	}else if(this.x + ballBounds.x + ballBounds.width > gameDimensions.width){
+		//Check collision with right gutter
+		this.gameManager.endRound("player");
+		
+	}else if(
+		this.x + ballBounds.x < this.paddles.left.x + this.paddles.left.getWidth()
+		&& this.y > this.paddles.left.y
+		&& this.y < this.paddles.left.y + this.paddles.left.getHeight()
+	){
+		//Check collision with left paddle
+		this.velocity.x *= -1.1;
+		this.velocity.y *= 1.1;
+	   
+	}else if(
+		this.x + ballBounds.x + ballBounds.width > this.paddles.right.x
+		&& this.y > this.paddles.right.y
+		&& this.y < this.paddles.right.y + this.paddles.right.getHeight()
+	){
+		//Check collision with right paddle
+		this.velocity.x *= -1.1;
+		this.velocity.y *= 1.1;
+	   
+	}
 	
 };
 
@@ -28,12 +81,26 @@ Ball.prototype.goToCenterPosition = function(side){
 	var ballBounds = this.getLocalBounds();
 	if(side == "left"){
 		paddleBounds = this.paddles.left.getLocalBounds();
-		this.x = this.paddles.left.x + paddleBounds.width - ballBounds.x;
+		this.x = this.paddles.left.x + paddleBounds.width - ballBounds.x +2;
+		
+		//set velocity to left because when it released will kick on the paddle
+		this.velocity.x = -10;
 	}else{
 		paddleBounds = this.paddles.right.getLocalBounds();
-		this.x = this.paddles.right.x + ballBounds.x;		
+		this.x = this.paddles.right.x + ballBounds.x -2;	
+		
+		//set velocity to right because when it released will kick on the paddle
+		this.velocity.x = 10;	
 	}
 	
 	this.y = this.paddles.left.y + paddleBounds.height/2;
+	//reset vertical velocity
+	this.velocity.y = 10;
+	
+};
+
+Ball.prototype.release = function(){
+	this.isReleased = true;
+	
 	
 };

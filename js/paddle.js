@@ -69,3 +69,15 @@ Paddle.prototype.insertMovement = function(movement){
 	
 	this.y = newPosition.y;
 };
+
+Paddle.prototype.getWidth = function(){
+	var bounds = this.getLocalBounds();
+	return bounds.width;
+	
+};
+Paddle.prototype.getHeight = function(){
+	var bounds = this.getLocalBounds();
+	return bounds.height;
+	
+};
+

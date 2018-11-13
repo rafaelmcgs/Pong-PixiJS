@@ -230,9 +230,13 @@ GameManager.prototype.startRound = function(){
 	
 };
 
+GameManager.prototype.endRound = function(winner){
+	
+};
+
 
 /**
- *Buttons Functions
+ *Controller Functions
 */
 GameManager.prototype.pointerdown = function(event){
 	if(!this.playing){return;}
@@ -247,6 +251,9 @@ GameManager.prototype.pointerdown = function(event){
 	
 	//Say to the player´s paddle save initial position
 	this.paddlePlayer.saveMovementStartPoint();
+	
+	//pointerdown is a trigger to release the ball, so it says to the ball
+	this.ball.release();
 	
 };
 GameManager.prototype.pointermove = function(event){
@@ -274,6 +281,8 @@ GameManager.prototype.pointerup = function(event){
 	this.movementStartPoint.y = 0;
 	
 };
+
+
 
 
 /**
