@@ -21,6 +21,7 @@
 	<script type="text/javascript">
 		var gameManager;
 		function documentReady() {
+			//before start the game, the font must be loaded
 			var fontLoader = new FontLoader(["Minecraft"], {
 				"complete": function(error) {
 					window.gameManager = new GameManager();

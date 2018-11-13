@@ -21,7 +21,7 @@ function Button (gameManager_, text, clickFunction_, align_){
 	
 	//Set click event
 	this.interactive = true;
-	this.on("click", this.callBackFunction.bind(this.gameManager));
+	this.on("pointerdown", this.callBackFunction.bind(this.gameManager));
 	
 	this.resize();
 }
