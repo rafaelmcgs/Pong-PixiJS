@@ -6,11 +6,11 @@ function Button (gameManager_, text, clickFunction_, align_){
 	this.callBackFunction = clickFunction_;
 	this.align = align_;
 	
-	//create and add box
+	//Create and add box
 	this.box = new PIXI.Graphics();	
 	this.addChild(this.box);
 	
-	//create and add text
+	//Create and add text
 	this.text = new PIXI.Text(text);
 	this.text.style  = {
 		fontSize:26,
@@ -19,7 +19,7 @@ function Button (gameManager_, text, clickFunction_, align_){
 	};	
 	this.addChild(this.text);
 	
-	//set click event
+	//Set click event
 	this.interactive = true;
 	this.on("click", this.callBackFunction.bind(this.gameManager));
 	
@@ -29,35 +29,41 @@ Button.prototype = Object.create(PIXI.Container.prototype);
 Button.prototype.resize = function(){
 	var boxSize = {
 		width: window.innerWidth * 0.40,
-		height: Math.max(window.innerWidth * 0.1 , 40)
+		height: Math.max(Math.min(window.innerWidth * 0.1, window.innerHeight * 0.3) , 40)
  	};
 	var textBounds;
 	var buttonBounds;
 	
+	//Draw the box
 	this.box.clear();
 	this.box.beginFill(0x000000);
-	this.box.lineStyle(4, 0xffffff, 1);
+	this.box.lineStyle(4, 0xffffff, 1,0);
 	this.box.drawRect(0, 0, boxSize.width, boxSize.height);
 	
+	//Define font size
 	this.text.style.fontSize = 100;
 	var sizeOK = false;
+	//Loop til textBounds fit in the box
 	while(!sizeOK){
+		//Get the textBounds
 		textBounds = this.text.getLocalBounds();
 		if(
 			textBounds.width < boxSize.width * 0.9
 			&& textBounds.height < boxSize.height * 0.9
 		){
+			//If fit in the box stop the loop
 			sizeOK=true;
 		}else{
+			//If not decrease the fontsize
 		   this.text.style.fontSize -= 1;
 		}
 	}
 	
-	//reposition text
+	//Reposition text
 	this.text.x = (boxSize.width - textBounds.width)/2;
 	this.text.y = (boxSize.height - textBounds.height)/2;
 	
-	//reposition button
+	//Reposition button
 	buttonBounds = this.getLocalBounds();
 	switch(this.align){
 		case "left":
@@ -70,7 +76,7 @@ Button.prototype.resize = function(){
 			this.x = (window.innerWidth - buttonBounds.width)/2;
 		break;
 	}
-	this.y = (window.innerHeight/2) + buttonBounds.height;
+	this.y = (window.innerHeight*0.6);
 	
 	
 };
