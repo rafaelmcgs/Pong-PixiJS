@@ -6,6 +6,9 @@ function Paddle (gameManager_, ai_){
 	this.AI = ai_;
 	this.difficulty = "";
 	
+	//Variable to freeze the paddle if fail
+	this.failFreeze = 0;
+	
 	//Variable to save pointer position when pointerdown
 	this.movementStartPoint = {
 		x:0,
@@ -25,6 +28,55 @@ function Paddle (gameManager_, ai_){
 Paddle.prototype = Object.create(PIXI.Graphics.prototype);
 Paddle.prototype.update = function(){
 	if(!this.AI){ return;}
+	
+	if(this.failFreeze !=0){
+		this.failFreeze -=1;
+		return;
+	}
+	
+	var ball = this.gameManager.getBall();
+	
+	if(!ball.isReleased){ return;}
+	
+	var failChance = 0;	//impossible to fail
+	var gameDimensions = this.gameManager.getGameSize();
+	var paddleBounds = this. getLocalBounds();
+	
+	
+	var maxMoveDistance = gameDimensions.height * 0.02;	
+	
+	var newPosition = {
+		x:this.x,
+		y:this.y
+	};
+	
+	//set the fail chance to 7% if the difficulty is normal
+	if(this.difficulty == "normal"){
+	   failChance = 0.07; 
+	}else{
+		maxMoveDistance = Math.abs(ball.getVelocity().y);
+	}
+	
+	//check chances
+	if(Math.random() > failChance){
+		if(ball.y < this.y){
+	   		newPosition.y -= maxMoveDistance;		   
+		}else if(ball.y > this.y +paddleBounds.height){
+	   		newPosition.y += maxMoveDistance;				 
+		}
+	}else{
+		//if not, roll the dice to freeze the paddle
+		//this.failFreeze = Math.round(Math.random() * 5);
+	}
+	
+	//Limit the position by the game´s dimensions	
+	if(newPosition.y < 0){
+		newPosition.y = 0;
+	}else if(newPosition.y + paddleBounds.height  > gameDimensions.height){
+		newPosition.y = gameDimensions.height - paddleBounds.height;	 
+	}
+	
+	this.y = newPosition.y;
 	
 };
 

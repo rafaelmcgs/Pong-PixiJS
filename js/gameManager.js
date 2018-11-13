@@ -84,6 +84,7 @@ function GameManager (){
 	//Setup the callback function to loader when it is completed
 	this.loader.load(this.init.bind(this));
 }
+
 GameManager.prototype.init = function(){
 	//Changing the main div class name will destroy the css loader
 	this.mainDiv.className = "game";
@@ -123,6 +124,7 @@ GameManager.prototype.init = function(){
 	//First resize call
 	this.resize();
 };
+
 GameManager.prototype.update = function(){
 	if(this.playing){
 		this.ball.update();
@@ -133,6 +135,7 @@ GameManager.prototype.update = function(){
 	requestAnimationFrame(this.update.bind(this));
 	
 };
+
 GameManager.prototype.resize = function(){
 	this.renderer.resize(window.innerWidth,window.innerHeight);
 	
@@ -208,6 +211,7 @@ GameManager.prototype.openLevelMenu = function(){
 	//Set title text
 	this.titleText.setText("Choose Level");
 };
+
 GameManager.prototype.selectLevel1 = function(){
 	//Clear stage
 	this.stage.removeChildren();
@@ -215,6 +219,7 @@ GameManager.prototype.selectLevel1 = function(){
 	this.paddleAI.setDifficulty("normal");
 	this.startMatch();
 };
+
 GameManager.prototype.selectLevel2 = function(){
 	//Clear stage
 	this.stage.removeChildren();
@@ -222,10 +227,12 @@ GameManager.prototype.selectLevel2 = function(){
 	this.paddleAI.setDifficulty("impossible");	
 	this.startMatch();
 };
+
 GameManager.prototype.startMatch = function(){
 	this.addElementToStage(this.pongGameContainer);
 	this.playing = true;
 };
+
 GameManager.prototype.startRound = function(){
 	
 };
@@ -256,6 +263,7 @@ GameManager.prototype.pointerdown = function(event){
 	this.ball.release();
 	
 };
+
 GameManager.prototype.pointermove = function(event){
 	if(
 		!this.playing
@@ -273,6 +281,7 @@ GameManager.prototype.pointermove = function(event){
 	
 	
 };
+
 GameManager.prototype.pointerup = function(event){
 	if(!this.playing){return;}
 	
@@ -291,11 +300,17 @@ GameManager.prototype.pointerup = function(event){
 GameManager.prototype.getGameSize = function(){
 	return this.gameSize;
 };
+
 GameManager.prototype.getPaddlePlayer = function(){
 	return this.paddlePlayer;
 };
+
 GameManager.prototype.getPaddleAI = function(){
 	return this.paddleAI;
+};
+
+GameManager.prototype.getBall = function(){
+	return this.ball;
 };
 
 

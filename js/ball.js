@@ -26,12 +26,10 @@ function Ball (gameManager_){
 }
 
 Ball.prototype = Object.create(PIXI.Graphics.prototype);
+
 Ball.prototype.update = function(){
 	if(!this.isReleased){return;}
 	
-	//Insert movement
-	this.x += this.velocity.x;
-	this.y += this.velocity.y;
 	
 	var ballBounds = this.getLocalBounds();
 	var gameDimensions = this.gameManager.getGameSize();
@@ -60,8 +58,8 @@ Ball.prototype.update = function(){
 		&& this.y < this.paddles.left.y + this.paddles.left.getHeight()
 	){
 		//Check collision with left paddle
-		this.velocity.x *= -1.1;
-		this.velocity.y *= 1.1;
+		this.velocity.x = Math.abs(this.velocity.x) * 1.01;
+		this.velocity.y *= 1.01;
 	   
 	}else if(
 		this.x + ballBounds.x + ballBounds.width > this.paddles.right.x
@@ -69,10 +67,14 @@ Ball.prototype.update = function(){
 		&& this.y < this.paddles.right.y + this.paddles.right.getHeight()
 	){
 		//Check collision with right paddle
-		this.velocity.x *= -1.1;
-		this.velocity.y *= 1.1;
-	   
+		this.velocity.x = Math.abs(this.velocity.x) * -1.01;
+		this.velocity.y *= 1.01;
 	}
+	
+	
+	//Insert movement
+	this.x += this.velocity.x;
+	this.y += this.velocity.y;
 	
 };
 
@@ -84,23 +86,25 @@ Ball.prototype.goToCenterPosition = function(side){
 		this.x = this.paddles.left.x + paddleBounds.width - ballBounds.x +2;
 		
 		//set velocity to left because when it released will kick on the paddle
-		this.velocity.x = -10;
+		this.velocity.x = -15;
 	}else{
 		paddleBounds = this.paddles.right.getLocalBounds();
 		this.x = this.paddles.right.x + ballBounds.x -2;	
 		
 		//set velocity to right because when it released will kick on the paddle
-		this.velocity.x = 10;	
+		this.velocity.x = 15;	
 	}
 	
 	this.y = this.paddles.left.y + paddleBounds.height/2;
 	//reset vertical velocity
-	this.velocity.y = 10;
+	this.velocity.y = 15;
 	
 };
 
 Ball.prototype.release = function(){
-	this.isReleased = true;
-	
-	
+	this.isReleased = true;	
+};
+
+Ball.prototype.getVelocity = function(){
+	return this.velocity;
 };
