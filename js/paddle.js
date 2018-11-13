@@ -6,8 +6,6 @@ function Paddle (gameManager_, ai_){
 	this.AI = ai_;
 	this.difficulty = "";
 	
-	//Variable to freeze the paddle if fail
-	this.failFreeze = 0;
 	
 	//Variable to save pointer position when pointerdown
 	this.movementStartPoint = {
@@ -25,14 +23,11 @@ function Paddle (gameManager_, ai_){
 	this.goToCenterPosition();
 	
 }
+
 Paddle.prototype = Object.create(PIXI.Graphics.prototype);
+
 Paddle.prototype.update = function(){
 	if(!this.AI){ return;}
-	
-	if(this.failFreeze !=0){
-		this.failFreeze -=1;
-		return;
-	}
 	
 	var ball = this.gameManager.getBall();
 	
@@ -64,9 +59,6 @@ Paddle.prototype.update = function(){
 		}else if(ball.y > this.y +paddleBounds.height){
 	   		newPosition.y += maxMoveDistance;				 
 		}
-	}else{
-		//if not, roll the dice to freeze the paddle
-		//this.failFreeze = Math.round(Math.random() * 5);
 	}
 	
 	//Limit the position by the game´s dimensions	
@@ -103,6 +95,7 @@ Paddle.prototype.saveMovementStartPoint = function(){
 	this.movementStartPoint.x = this.x;
 	this.movementStartPoint.y = this.y;
 };
+
 Paddle.prototype.insertMovement = function(movement){
 	var newPosition = {
 		x: this.movementStartPoint.x - movement.x,

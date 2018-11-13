@@ -25,7 +25,9 @@ function Button (gameManager_, text, clickFunction_, align_){
 	
 	this.resize();
 }
+
 Button.prototype = Object.create(PIXI.Container.prototype);
+
 Button.prototype.resize = function(){
 	var boxSize = {
 		width: window.innerWidth * 0.40,

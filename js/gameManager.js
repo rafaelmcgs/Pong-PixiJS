@@ -78,8 +78,10 @@ function GameManager (){
 	 */
 	this.loader = PIXI.loader;
 	
-	//This sound will be played when the ball hit something
-	this.loader.add("sound-hit", "sounds/hit.ogg");
+	//This sound will be played when the ball hit the paddles
+	this.loader.add("sound-hit", "sounds/hit.ogg");	
+	//This sound will be played when the round end
+	this.loader.add("sound-endround", "sounds/endround.ogg");
 	
 	//Setup the callback function to loader when it is completed
 	this.loader.load(this.init.bind(this));
@@ -186,8 +188,15 @@ GameManager.prototype.resize = function(){
 	this.pongGameContainer.scale.y = tempScale.x;
 	
 	//Reposition the pongGameContainer
-	this.pongGameContainer.x = (window.innerWidth - (this.gameSize.width * tempScale.x))/2;
-	this.pongGameContainer.y = (window.innerHeight - (this.gameSize.height * tempScale.x))/2;
+	if(this.orientation == "landscape"){
+		this.pongGameContainer.rotation = 0;
+		this.pongGameContainer.x = (window.innerWidth - (this.gameSize.width * tempScale.x))/2;
+		this.pongGameContainer.y = (window.innerHeight - (this.gameSize.height * tempScale.x))/2;
+	}else{
+		this.pongGameContainer.rotation = -1.5708 ;
+		this.pongGameContainer.y = window.innerHeight -((window.innerHeight - (this.gameSize.width * tempScale.x))/2);
+		this.pongGameContainer.x = (window.innerWidth - (this.gameSize.height * tempScale.x))/2;
+	}
 	
 };
 
@@ -229,17 +238,47 @@ GameManager.prototype.selectLevel2 = function(){
 };
 
 GameManager.prototype.startMatch = function(){
+	this.score.resetScore();
 	this.addElementToStage(this.pongGameContainer);
 	this.playing = true;
 };
 
-GameManager.prototype.startRound = function(){
-	
-};
 
+/**
+ *Function to end the round and match
+ */
 GameManager.prototype.endRound = function(winner){
 	
+	PIXI.sound.play('sound-endround');
+	
+	this.score.givePoint(winner);
+	this.dragging = false;
+	this.paddleAI.goToCenterPosition();
+	this.paddlePlayer.goToCenterPosition();
+	
+	var ballSide = "right";
+	if(winner == "AI"){
+		ballSide = "left";
+	}
+	this.ball.goToCenterPosition(ballSide);
+	if(this.score.checkMatchEnd()){
+		this.endMatch();
+	}
 };
+
+GameManager.prototype.endMatch = function(){
+	this.playing = false;
+	//Clear stage
+	this.stage.removeChildren();
+	//Add elements
+	this.addElementToStage(this.titleText);
+	this.addElementToStage(this.buttons.restart);
+	this.addElementToStage(this.buttons.change);
+	
+	//Set title text
+	this.titleText.setText(this.score.getText());
+};
+
 
 
 /**

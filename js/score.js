@@ -7,7 +7,7 @@ function Score (gameManager){
 		AI : 0
 	};
 	
-	this.text = "YOU "+this.score.player+" X "+this.score.AI+" BOT";
+	this.refreshText();
 	this.style  = {
 		fontSize:200,
 		fontFamily:"Minecraft",
@@ -37,9 +37,31 @@ function Score (gameManager){
 	
 }
 Score.prototype = Object.create(PIXI.Text.prototype);
-Score.prototype.update = function(){
-	
+
+Score.prototype.refreshText = function(){
+	this.text = "YOU "+this.score.player+" X "+this.score.AI+" BOT";
 };
-Score.prototype.resize = function(){
-	
+
+Score.prototype.resetScore = function(){
+	this.score.player = 0;
+	this.score.AI = 0;
+	this.refreshText();
 };
+
+Score.prototype.givePoint = function(winner){
+	this.score[winner] +=1;
+	this.refreshText();
+};
+
+Score.prototype.checkMatchEnd = function(){
+	
+	if(this.score.player >=5 || this.score.AI >=5){
+	   return true;
+	}
+	return false;
+};
+
+Score.prototype.getText = function(){
+	return "YOU "+this.score.player+" X "+this.score.AI+" BOT";
+};
+

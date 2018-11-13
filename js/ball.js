@@ -58,6 +58,7 @@ Ball.prototype.update = function(){
 		&& this.y < this.paddles.left.y + this.paddles.left.getHeight()
 	){
 		//Check collision with left paddle
+		PIXI.sound.play('sound-hit');
 		this.velocity.x = Math.abs(this.velocity.x) * 1.01;
 		this.velocity.y *= 1.01;
 	   
@@ -67,6 +68,7 @@ Ball.prototype.update = function(){
 		&& this.y < this.paddles.right.y + this.paddles.right.getHeight()
 	){
 		//Check collision with right paddle
+		PIXI.sound.play('sound-hit');
 		this.velocity.x = Math.abs(this.velocity.x) * -1.01;
 		this.velocity.y *= 1.01;
 	}
@@ -98,6 +100,9 @@ Ball.prototype.goToCenterPosition = function(side){
 	this.y = this.paddles.left.y + paddleBounds.height/2;
 	//reset vertical velocity
 	this.velocity.y = 15;
+	
+	//lock the ball
+	this.isReleased = false;
 	
 };
 
