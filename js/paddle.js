@@ -6,6 +6,12 @@ function Paddle (gameManager_, ai_){
 	this.AI = ai_;
 	this.difficulty = "";
 	
+	//Variable to save pointer position when pointerdown
+	this.movementStartPoint = {
+		x:0,
+		y:0
+	};
+	
 	
 	var gameDimensions = this.gameManager.getGameSize();
 	//Draw the paddle
@@ -38,4 +44,28 @@ Paddle.prototype.goToCenterPosition = function(){
 
 Paddle.prototype.setDifficulty = function(level){
 	this.difficulty = level;
+};
+
+Paddle.prototype.saveMovementStartPoint = function(){
+	//I will keep the x coordinate because in future I can improve the game
+	this.movementStartPoint.x = this.x;
+	this.movementStartPoint.y = this.y;
+};
+Paddle.prototype.insertMovement = function(movement){
+	var newPosition = {
+		x: this.movementStartPoint.x - movement.x,
+		y:this.movementStartPoint.y - movement.y
+	};
+	
+	var gameDimensions = this.gameManager.getGameSize();
+	var paddleBounds = this. getLocalBounds();
+	
+	//Limit the position
+	if(newPosition.y < 0){
+		newPosition.y = 0;
+	}else if(newPosition.y + paddleBounds.height  > gameDimensions.height){
+		newPosition.y = gameDimensions.height - paddleBounds.height;	 
+	}
+	
+	this.y = newPosition.y;
 };

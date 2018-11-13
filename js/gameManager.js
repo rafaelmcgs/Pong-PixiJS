@@ -4,10 +4,17 @@ function GameManager (){
 	PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 	
 	/**
-	 *Game Settings
+	 *Game variables
 	 */
 	//This boolean determines if the game is running
 	this.playing = false;
+	
+	this.dragging = false;
+	//Variable to save pointer position when pointerdown
+	this.movementStartPoint = {
+		x:0,
+		y:0
+	};
 	
 	//Variable useful to create and scale the elements of the match
 	this.gameSize = {
@@ -30,6 +37,7 @@ function GameManager (){
 	
 	//The root game container
 	this.stage = new PIXI.Container();
+	this.stage.interactive = true;
 	
 	this.renderer; //will be initialized later
 	
@@ -106,13 +114,19 @@ GameManager.prototype.init = function(){
 	this.addElementToStage(this.buttons.start);
 	this.titleText.setText("Pong Game");
 	
+	//Create global touch/click events to controll the paddle
+	this.stage.on("pointerdown",this.pointerdown.bind(this));
+	this.stage.on("pointermove",this.pointermove.bind(this));
+	this.stage.on("pointerup",this.pointerup.bind(this));
+	
+	
 	//First resize call
 	this.resize();
 };
 GameManager.prototype.update = function(){
 	if(this.playing){
 		this.ball.update();
-		this.playerAi.update();
+		this.paddleAI.update();
 	}
 	
 	this.renderer.render(this.stage);
@@ -178,9 +192,10 @@ GameManager.prototype.addElementToStage = function(element){
 	this.stage.addChild(element);
 };
 
-/////////////////////
-//Buttons Functions//
-/////////////////////
+
+/**
+ *Buttons Functions
+*/
 GameManager.prototype.openLevelMenu = function(){
 	//Clear stage
 	this.stage.removeChildren();
@@ -209,11 +224,61 @@ GameManager.prototype.selectLevel2 = function(){
 };
 GameManager.prototype.startMatch = function(){
 	this.addElementToStage(this.pongGameContainer);
+	this.playing = true;
 };
 GameManager.prototype.startRound = function(){
 	
 };
 
+
+/**
+ *Buttons Functions
+*/
+GameManager.prototype.pointerdown = function(event){
+	if(!this.playing){return;}
+	this.dragging = true;
+	
+	//Get the pointer position on the pongGameContainer
+	var pointerPosition = event.data. getLocalPosition (this.pongGameContainer);
+	
+	//Save movementStartPoint
+	this.movementStartPoint.x = pointerPosition.x;
+	this.movementStartPoint.y = pointerPosition.y;
+	
+	//Say to the player´s paddle save initial position
+	this.paddlePlayer.saveMovementStartPoint();
+	
+};
+GameManager.prototype.pointermove = function(event){
+	if(
+		!this.playing
+		|| !this.dragging
+	){return;}
+	
+	//Get the pointer position on the pongGameContainer
+	var pointerPosition = event.data. getLocalPosition (this.pongGameContainer);
+	var movement = {
+		x: this.movementStartPoint.x - pointerPosition.x,
+		y: this.movementStartPoint.y - pointerPosition.y,
+	};
+	
+	this.paddlePlayer.insertMovement(movement);
+	
+	
+};
+GameManager.prototype.pointerup = function(event){
+	if(!this.playing){return;}
+	
+	this.dragging = false;
+	this.movementStartPoint.x = 0;
+	this.movementStartPoint.y = 0;
+	
+};
+
+
+/**
+ *Get functions
+ */
 GameManager.prototype.getGameSize = function(){
 	return this.gameSize;
 };
@@ -223,5 +288,7 @@ GameManager.prototype.getPaddlePlayer = function(){
 GameManager.prototype.getPaddleAI = function(){
 	return this.paddleAI;
 };
+
+
 
 
